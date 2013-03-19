@@ -90,6 +90,8 @@ The {cmd:burd3} to {cmd:burd11} sub-schemes provide blue-to-red diverging color 
  which might be useful to plot ordered response scales in survey data.
 {p_end}
 
+{pstd}
+Details and examples of the BuRd scheme in use are available through its development repository at GitHub: {browse "https://github.com/briatte/burd"}
 
 {marker references}{...}
 {title:References}
