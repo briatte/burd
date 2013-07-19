@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Burd by briatte</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Burd</h1>
+        <h2>A blue-red Stata colour scheme that supports up to 11 diverging classes.</h2>
+        <a href="https://github.com/briatte/burd" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <p>This repository contains the development version of the <code>burd</code> Stata scheme. The <code>burd</code> Stata graph scheme is a reverse implementation of Cynthia Brewer's <a href="http://colorbrewer.org/">ColorBrewer</a> <code>RdBu</code> diverging color scheme. I use it to teach a <a href="https://github.com/briatte/srqm">Stata course</a> that is also available from GitHub.</p>
+
+<h1>
+<a name="howto" class="anchor" href="#howto"><span class="octicon octicon-link"></span></a>HOWTO</h1>
+
+<p>Install the scheme from SSC with the following command:</p>
+
+<pre><code>ssc install scheme-burd, replace
+</code></pre>
+
+<p>Type <code>help scheme_burd</code> for usage notes, and see this <a href="http://srqm.tumblr.com/post/44632966728/plotting-with-burd">blog entry</a> for further details and examples.</p>
+
+<h1>
+<a name="credits" class="anchor" href="#credits"><span class="octicon octicon-link"></span></a>CREDITS</h1>
+
+<p>All credits due to Cynthia Brewer for <a href="https://colorbrewer.org">ColorBrewer</a>.</p>
+
+<p>Thanks to Christopher Baum for making the package available via <a href="http://econpapers.repec.org/software/bocbocode/s457623.htm">SSC/RePEc</a>.</p>
+
+<h1>
+<a name="notes" class="anchor" href="#notes"><span class="octicon octicon-link"></span></a>NOTES</h1>
+
+<ul>
+<li>The scheme is similar to the <code>BuRd</code> scheme that appears in <a href="http://www.stata.com/meeting/italy12/abstracts/materials/it12_pisati.pdf">Maurizio Pisati's</a> <code>spmap</code> command for spatial data. Its default settings further draw on <a href="http://leuven.economists.nl/stata.php">Edwin Leuven's</a> schemes, which in turn draw on <a href="http://www.sscnet.ucla.edu/soc/faculty/mason/readings/juul_sj_2003.pdf">Svend Juul's</a> <code>lean</code> schemes.</li>
+<li>The qualitative colors roughly match those of <code>s2color</code> with those from the 7-class diverging schemes from ColorBrewer, and the scheme falls back on <code>s2color</code> after the ninth data class. Bar colors are shown at 50% intensity. These settings have <em>not</em> been tested for color blindness.</li>
+<li>The <code>scheme-burd3</code> to <code>scheme-burd11</code> files implement diverging blue-red colors for up to 11 data classes. The appropriate scale should be passed with the <code>scheme(burd#)</code> option, where <code>#</code> is the number of diverging data classes.</li>
+</ul><h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>EXAMPLES</h2>
+
+<pre><code>use data/nhis2009, clear // National Health Interview Survey data
+spineplot health raceb, scheme(burd5) // requires the spineplot package
+</code></pre>
+
+<p><img src="http://i.imgur.com/ZDOHiql.png" alt="Imgur"></p>
+
+<pre><code>use data/gss2010 if year == 2010, clear // General Social Survey data
+tab happy, gen(h_)
+gr bar h_?, over(polviews, lab(angle(25))) stack percent ///
+  ti("General happiness") yti(%) ///
+  legend(order(1 "happy" 2 "pretty happy" 3 "not too happy") row(1)) ///
+  scheme(burd3)
+</code></pre>
+
+<p><img src="http://i.imgur.com/D4LoYSS.png" alt="Imgur"></p>
+
+<pre><code>use data/ess2008, clear // European Social Survey data
+tab trrtort, gen(torture_)
+gr hbar torture_* [aw=dweight], stack percent over(cntry, sort(1)des lab(labsize(*.8))) ///
+  ti("Torture is never justified even to prevent terrorism") yti("") ///
+  legend(rows(1) order(1 "Strongly agree" 2 "" 3 "Neither" 4 "" 5 "Strongly disagree")) ///
+  scheme(burd5)
+</code></pre>
+
+<p><img src="http://i.imgur.com/ZrhjMU1.png" alt="Imgur"></p>
+
+<pre><code>use data/qog2011, clear // Quality of Government data
+cap gen y = wdi_fr
+cap gen x = bl_asyf25
+cap drop q
+xtile q = y, nq(4)
+local mark "ms(i) mlab(ccodewb) mlabp(0)"
+local plot "sc y x if q==1, scheme(burd4) `mark'"
+forval i = 2/4 {
+  local plot = "`plot' || sc y x if q==`i', `mark'"
+}
+tw `plot' legend(off) yti(Fertility rate) xti(Female education years)
+</code></pre>
+
+<p><img src="http://i.imgur.com/tdam0YI.png" alt="Imgur"></p>
+
+<h2>
+<a name="matrixes" class="anchor" href="#matrixes"><span class="octicon octicon-link"></span></a>Matrixes</h2>
+
+<p><img src="http://i.imgur.com/wIlqB.png" alt="Imgur"></p>
+
+<p><img src="http://i.imgur.com/26kEs.png" alt="Imgur"></p>
+
+<h2>
+<a name="comparisons" class="anchor" href="#comparisons"><span class="octicon octicon-link"></span></a>Comparisons</h2>
+
+<p><img src="http://i.imgur.com/nKAVX.png" alt="Imgur"></p>
+
+<p><img src="http://i.imgur.com/Fiq2u.png" alt="Imgur"></p>
+
+<p><img src="http://i.imgur.com/KJTsh.png" alt="Imgur"></p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/briatte/burd/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/briatte/burd/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/briatte/burd"></a> is maintained by <a href="https://github.com/briatte">briatte</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
